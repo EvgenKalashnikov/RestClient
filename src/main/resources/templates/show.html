@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Show</title>
+    <div>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+              integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+              crossorigin="anonymous">
+    </div>
+
+</head>
+<body>
+<nav class="navbar bg-dark navbar-inverse navbar-static-top">
+    <a href="/" class="navbar-brand text-white">Project name</a>
+    <a href="/logout" class="mr-2 text-white">Logout</a>
+</nav>
+<div class="row mt-3">
+    <div class="col-2">
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+                <a href="/admin" class="nav-link active">Admin</a>
+            </li>
+            <li class="nav-item">
+                <a href="/user" class="nav-link">User</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-10">
+        <div class="container">
+            <h1>Admin panel</h1>
+            <nav>
+                <div class="nav nav-tabs" id="usertab" role="tablist">
+                    <a class="nav-item nav-link active" id="show-tab" data-toggle="tab" href="#nav-show"
+                       role="tab" aria-controls="nav-show" aria-selected="true">Users table</a>
+
+                    <a class="nav-item nav-link" id="new-user" data-toggle="tab" href="#nav-new-user"
+                       role="tab" aria-controls="nav-new-user" aria-selected="false">New user</a>
+                </div>
+            </nav>
+
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-show" role="tabpanel" aria-labelledby="show-tab">
+                    <div class="container">
+                        <table class="table table-hover table-bordered">
+
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Role</th>
+                                <th>Login</th>
+                                <th>Password</th>
+                                <th>Email</th>
+                                <th>Edit</th>
+                            </tr>
+                            </thead>
+
+                            <div th:each="u:${users}">
+
+                                <tbody>
+                                <tr>
+                                    <td th:text="${u.id}"></td>
+                                    <td>
+                                        <small th:each="r:${u.roles}" th:text="${r.title}+' '"/>
+                                    </td>
+                                    <td th:text="${u.login}"></td>
+                                    <td>********</td>
+                                    <td th:text="${u.email}"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#modal" th:attrappend="data-target=${u.id}">
+                                            Edit
+                                        </button>
+
+                                        <div class="modal fade" id="modal" tabindex="-1" role="dialog"
+                                             th:attrappend="id=${u.id}"
+                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 th:text="${'edit user :'+u.login}" class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body ">
+                                                        <div class="container">
+                                                            <div class="row justify-content-center align-items-center">
+                                                                <form th:action="@{/updateUser}" method="post" id="form"
+                                                                      role="form" th:object="${u}">
+                                                                    <div class="form-group">
+                                                                        <label for="id"><b>ID</b></label>
+                                                                        <input th:value="${u.id}" name="id" type="text"
+                                                                               class="form-control" readonly id="id"
+                                                                               placeholder="changeID">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="mail"><b>Email</b></label>
+                                                                        <input th:value="${u.email}" name="email"
+                                                                               type="text" class="form-control"
+                                                                               id="mail"
+                                                                               placeholder="change email">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="log"><b>Login</b></label>
+                                                                        <input th:value="${u.login}" name="login"
+                                                                               type="text" class="form-control" id="log"
+                                                                               placeholder="change login">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="pass"><b>Password</b></label>
+                                                                        <input th:value="${u.password}" name="password"
+                                                                               type="text" class="form-control"
+                                                                               id="pass" placeholder="change password">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="role"><b>Roles</b></label>
+                                                                        <input name="roles" th:each="r:${u.roles}"
+                                                                               th:value="${r.title}" type="text"
+                                                                               class="form-control" id="role"
+                                                                               placeholder="change role">
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button th:type="button" class="btn btn-secondary"
+                                                                                data-dismiss="modal">Close
+                                                                        </button>
+                                                                        <button th:type="submit" class="btn btn-primary">Save
+                                                                            changes
+                                                                        </button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><a th:href="@{'/delete?id='+${u.id}}">Delete</a></td>
+                                </tr>
+                                </tbody>
+                            </div>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="nav-new-user" role="tabpanel" aria-labelledby="new-user">
+                    <div class="container text-center">
+                        <div class="row justify-content-center align-items-center">
+                            <form th:action="@{/addUser}" method="POST" role="form">
+                                <div class="form-group">
+                                    <label for="email1" class="mb-0 mt-5"><b>Email</b></label>
+                                    <input type="text" name="email" class="form-control mt-0" id="email1"
+                                           placeholder="login">
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-0" for="login1"> <b>Login</b></label>
+                                    <input type="text" name="login" id="login1" required
+                                           class="form-control mt-0" placeholder="Enter login"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="mb-0"><b>Password</b></label>
+                                    <input type="password" name="password" required
+                                           id="password" class="form-control mt-0" placeholder="Enter password"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="role1" class="mb-0"><b>Role</b></label>
+                                    <input type="text" name="roles" required
+                                           id="role1" class="form-control mt-0" placeholder="Enter role"/>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-success col-12" value="Add new user">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+            integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+            crossorigin="anonymous"></script>
+</div>
+
+</body>
+</html>
